@@ -21,15 +21,21 @@ pipeline {
 				withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
     					
 					withSonarQubeEnv('SonarQube') {
-                        sh "echo SONAR_SCANNER_HOME=${SONAR_SCANNER_HOME}"
+								
+                        sh """
+                        echo 'Starting Sonar Scanner...'
+                        echo 'SONAR_SCANNER_HOME: ${SONAR_SCANNER_HOME}'
+                        echo 'SONAR_PROJECT_KEY: ${SONAR_PROJECT_KEY}'
+                        echo 'SONAR_TOKEN: ${SONAR_TOKEN}'
+                        echo 'SonarQube URL: http://sonarqube:9000'
 
-						sh """
-						${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-						-Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-						-Dsonar.sources=. \
-						-Dsonar.host.url=http://sonarqube:9000 \
-						-Dsonar.login=${SONAR_TOKEN}
-						"""   						
+                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://sonarqube:9000 \
+                        -Dsonar.login=${SONAR_TOKEN}
+
+                       echo 'Sonar Scanner finished.'"""
+
 					}
 				}
 			}
