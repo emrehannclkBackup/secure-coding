@@ -15,6 +15,7 @@ pipeline {
                 git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/emrehannclkBackup/secure-coding'
                 sh "echo SONAR_SCANNER_HOME=${SONAR_SCANNER_HOME}"
                 echo "debug prints"
+                 sh 'ls -al'
                   sh """
                         echo 'Starting Sonar Scanner...'
                         echo 'SONAR_SCANNER_HOME: ${SONAR_SCANNER_HOME}'
