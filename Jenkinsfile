@@ -19,6 +19,8 @@ pipeline {
 				withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
     					
 					withSonarQubeEnv('SonarQube') {
+                        sh "echo SONAR_SCANNER_HOME=${SONAR_SCANNER_HOME}"
+
 						sh """
 						${SONAR_SCANNER_HOME}/bin/sonar-scanner \
 						-Dsonar.projectKey=${SONAR_PROJECT_KEY} \
