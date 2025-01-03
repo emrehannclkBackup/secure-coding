@@ -60,7 +60,7 @@ pipeline {
 		stage('Trivy Scan'){
 			steps {
                 
-					
+					  echo 'scanning The Project....'
 			}
 		}
 
