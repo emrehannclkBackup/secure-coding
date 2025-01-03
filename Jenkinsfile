@@ -12,7 +12,9 @@ pipeline {
         stage('Github') {
             steps {
                 git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/emrehannclkBackup/secure-coding'
-            }
+                sh "echo SONAR_SCANNER_HOME=${SONAR_SCANNER_HOME}"
+                echo "debug prints"
+               }
         }
          stage('SonarQube Analysis'){
 			steps {
