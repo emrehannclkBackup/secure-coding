@@ -34,7 +34,7 @@ pipeline {
 
 
     					
-					withSonarQubeEnv('SonarQube') {
+					withSonarQubeEnv('SonarQubeLocal') {
 								
                         sh """
                         echo 'Starting Sonar Scanner...'
