@@ -6,6 +6,7 @@ pipeline {
     environment {
 		SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
 		SONAR_PROJECT_KEY = 'secure'
+        DOCKER_HUB_REPO = 'emrehannclk/secure'
         
 		
 	}
@@ -15,16 +16,7 @@ pipeline {
                 git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/emrehannclkBackup/secure-coding'
                 sh "echo SONAR_SCANNER_HOME=${SONAR_SCANNER_HOME}"
                 echo "debug prints"
-                 sh 'ls -al'
-                  sh """
-                        echo 'Starting Sonar Scanner...'
-                        echo 'SONAR_SCANNER_HOME: ${SONAR_SCANNER_HOME}'
-                        echo 'SONAR_PROJECT_KEY: ${SONAR_PROJECT_KEY}'
-                        echo 'SonarQube URL: http://sonarqube:9000'
-
-                      
-
-                       echo 'Sonar Scanner finished.'"""
+                
 
                }
         }
@@ -55,6 +47,20 @@ pipeline {
 
 					}
 				}
+			}
+		}
+
+        stage('Docker Image'){
+			steps {
+				script {
+					dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
+				}
+			}
+		}
+		stage('Trivy Scan'){
+			steps {
+                
+					
 			}
 		}
 
