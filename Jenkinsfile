@@ -18,7 +18,6 @@ pipeline {
                         echo 'Starting Sonar Scanner...'
                         echo 'SONAR_SCANNER_HOME: ${SONAR_SCANNER_HOME}'
                         echo 'SONAR_PROJECT_KEY: ${SONAR_PROJECT_KEY}'
-                        echo 'SONAR_TOKEN: ${SONAR_TOKEN}'
                         echo 'SonarQube URL: http://sonarqube:9000'
 
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
