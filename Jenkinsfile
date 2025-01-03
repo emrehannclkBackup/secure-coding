@@ -22,10 +22,7 @@ pipeline {
                         echo 'SONAR_PROJECT_KEY: ${SONAR_PROJECT_KEY}'
                         echo 'SonarQube URL: http://sonarqube:9000'
 
-                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://sonarqube:9000 \
-                         -Dsonar.login=${c727fd06a3185110ab66c5b7976e5a1edb35c18f}
+                      
 
                        echo 'Sonar Scanner finished.'"""
 
@@ -34,10 +31,15 @@ pipeline {
          stage('SonarQube Analysis'){
 			steps {
 				withCredentials([string(credentialsId: 'sonar', variable: 'SONAR_TOKEN')]) {
+
+
     					
 					withSonarQubeEnv('SonarQube') {
 								
                         sh """
+                        echo 'Starting Sonar Scanner...'
+                        echo 'Starting Sonar Scanner...'
+                        echo 'Starting Sonar Scanner...'
                         echo 'Starting Sonar Scanner...'
                         echo 'SONAR_SCANNER_HOME: ${SONAR_SCANNER_HOME}'
                         echo 'SONAR_PROJECT_KEY: ${SONAR_PROJECT_KEY}'
