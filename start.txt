@@ -1,2 +1,0 @@
-
- sonarqube-token:d1f63e131fd3707348e7c4c29af846eb8e1f1317

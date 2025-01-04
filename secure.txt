@@ -1,0 +1,73 @@
+const express = require('express');
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Kullanıcı girdilerini temizleme fonksiyonu
+function sanitizeInput(input) {
+  return String(input || '').replace(/[&<>"'/]/g, (char) => {
+    const charMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;',
+    };
+    return charMap[char] || char;
+  });
+}
+
+// Güvenli merhaba endpoint'i
+app.get('/hello', (req, res) => {
+  const user = sanitizeInput(req.query.user || 'Guest');
+  res.send(`Hello, ${user}.\n`);
+});
+
+// CORS yapılandırması: Sadece belirli bir alan adına izin ver
+const allowedOrigins = ['https://trusted-domain.com'];
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  next();
+});
+
+// Eval yerine güvenli alternatif: Yalnızca belirli komutları çalıştır
+app.get('/eval', (req, res) => {
+  const script = req.query.script;
+  if (script === 'safeAction') {
+    res.send('Executed safe action\n');
+  } else {
+    res.status(400).send('Invalid script parameter\n');
+  }
+});
+
+// Şifreleri güvenli saklama: Basit bir hash fonksiyonu
+function simpleHash(password) {
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Tam sayı olarak sakla
+  }
+  return hash.toString(16);
+}
+
+app.get('/login', (req, res) => {
+  const username = sanitizeInput(req.query.username || '');
+  const password = req.query.password || '';
+  const hashedPassword = simpleHash(password);
+  console.log(`User: ${username}, Password Hash: ${hashedPassword}`);
+  res.send('Login attempt logged securely\n');
+});
+
+// Güvenli arama endpoint'i
+app.get('/search', (req, res) => {
+  const query = sanitizeInput(req.query.query || '');
+  res.send(`Search results for: ${query}`);
+});
+
+app.listen(port, () => {
+  console.log(`Server running on port ${port}`);
+});
