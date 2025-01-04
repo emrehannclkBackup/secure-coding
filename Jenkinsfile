@@ -35,6 +35,7 @@ pipeline {
 
         stage('npm') {
             steps {
+               echo 'Npm is being used'
                sh 'npm test'
                sh 'npm install'
                echo 'Npm is being used'
@@ -89,6 +90,7 @@ pipeline {
 		}
         stage('Push Image to DockerHub') {
             steps {
+                  echo 'Pushing Docker image to DockerHub'
                 script {
                 
                     docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CRED_ID}") {
