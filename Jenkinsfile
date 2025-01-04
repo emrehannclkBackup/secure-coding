@@ -8,6 +8,7 @@ pipeline {
 		SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
 		SONAR_PROJECT_KEY = 'secure'
         DOCKER_HUB_REPO ='emrehannclk/secure'
+        DOCKER_HOST = 'tcp://host.docker.internal:2375'
        
         
 		

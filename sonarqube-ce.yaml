@@ -26,5 +26,5 @@ services:
       POSTGRES_PASSWORD: sonar
       POSTGRES_DB: sonarqubedb
     volumes:
-      - /opt/postgresql2/:/var/lib/postgresql
-      - /opt/postgresql2/data:/var/lib/postgresql/data
+      - /opt/postgresql3/:/var/lib/postgresql
+      - /opt/postgresql3/data:/var/lib/postgresql/data
