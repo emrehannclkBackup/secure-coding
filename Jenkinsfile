@@ -83,8 +83,10 @@ pipeline {
 		stage('Trivy Scan'){
 			steps {
 				 echo 'trivy is scanning'	
+                 sh 'trivy --severity HIGH,CRITICAL --no-progress --format table -o trivy-cicd-01-report.html image ${DOCKER_HUB_REPO}:latest'
 			}
 		}
+       
 	
 	}
        
