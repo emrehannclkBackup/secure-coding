@@ -9,7 +9,7 @@ pipeline {
 		SONAR_PROJECT_KEY = 'secure'
         DOCKER_HUB_REPO ='emrehannclk/secure'
         DOCKER_HOST = 'tcp://host.docker.internal:2375'
-        DOCKER_HUB_CRED_ID = 'dhub-token'
+        DOCKER_HUB_CRED_ID = 'docker'
        
         
 		
