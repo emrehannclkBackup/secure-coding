@@ -1,6 +1,8 @@
 pipeline {
     agent any
-    
+     tools {
+		nodejs 'NodeJS'
+	}	
    
     stages {
         stage('List Files') {
@@ -14,14 +16,19 @@ pipeline {
             steps {
                
                 echo 'Cloning the project from Github...'
+                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/emrehannclkBackup/secure-coding.git'
+                echo 'Cloning the project from Github...'
+                sh 'ls -la'
               
             }
         }
 
         stage('Unit Test') {
             steps {
+              echo 'Npm is being used'
+               sh 'npm test'
+               sh 'npm install'
                echo 'Npm is being used'
-               echo 'Running unit tests...'
             }
         }
 
