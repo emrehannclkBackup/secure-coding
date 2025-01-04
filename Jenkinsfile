@@ -7,6 +7,7 @@ pipeline {
     environment {
 		SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
 		SONAR_PROJECT_KEY = 'secure'
+        DOCKER_HUB_REPO ='emrehannclk/secure'
        
         
 		
@@ -68,6 +69,23 @@ pipeline {
 				}
 			}
 		}
+
+        stage('Docker Image'){
+			steps {
+
+                echo 'Building Docker İmage'
+				script {
+					dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
+				}
+			}
+		}
+		stage('Trivy Scan'){
+			steps {
+				 echo 'trivy is scanning'	
+			}
+		}
+	
+	}
         stage('Deploy') {
             steps {
                 echo 'Deploying the project...'
