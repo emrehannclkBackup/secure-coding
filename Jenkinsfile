@@ -9,6 +9,7 @@ pipeline {
 		SONAR_PROJECT_KEY = 'secure'
         DOCKER_HUB_REPO ='emrehannclk/secure'
         DOCKER_HOST = 'tcp://host.docker.internal:2375'
+        DOCKER_HUB_CRED_ID = 'dhub-token'
        
         
 		
@@ -86,7 +87,16 @@ pipeline {
                  sh 'trivy --severity HIGH,CRITICAL --no-progress --format table -o trivy-cicd-01-report.html image ${DOCKER_HUB_REPO}:latest'
 			}
 		}
-       
+        stage('Push Image to DockerHub') {
+            steps {
+                script {
+                
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CRED_ID}") {
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+        }
 	
 	}
        
