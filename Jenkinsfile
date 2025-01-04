@@ -6,6 +6,8 @@ pipeline {
      environment {
 		SONAR_SCANNER_HOME = tool 'SonarQubeScanner'
 		SONAR_PROJECT_KEY = 'secure'
+        DOCKER_HUB_REPO ='emrehannclk/secure'
+        DOCKER_HUB_CRED_ID = 'docker'
    
         
 		
@@ -69,25 +71,36 @@ pipeline {
 			}
 		}
 
-        stage('Docker Image') {
-            steps {
-                echo 'Building Docker Image'
-               
-            }
-        }
+         stage('Docker Image'){
+			steps {
 
-        stage('Trivy Scan') {
-            steps {
-                echo 'Trivy is scanning'
-               
-            }
-        }
+                echo 'Building Docker İmage'
+				script {
+					dockerImage = docker.build("${DOCKER_HUB_REPO}:latest")
+				}
+			}
+		}
+		stage('Trivy Scan'){
+			steps {
+				 echo 'trivy is scanning'	
+                 sh 'trivy --severity HIGH,CRITICAL --no-progress --format table -o trivy-cicd-01-report.html image ${DOCKER_HUB_REPO}:latest'
+			}
+		}
+
 
         stage('Push Image to DockerHub') {
             steps {
-                echo 'Pushing Docker image to DockerHub'
-              
+                  echo 'Pushing Docker image to DockerHub'
+                script {
+                
+                    docker.withRegistry('https://registry.hub.docker.com', "${DOCKER_HUB_CRED_ID}") {
+                        dockerImage.push("latest")
+                    }
+                }
             }
         }
+
+
+
     }
 }
