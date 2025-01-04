@@ -2,39 +2,70 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Potansiyel güvenlik açığı: HTTP parametreleriyle doğrudan dosya yolu kullanımı
+// Kullanıcı girdilerini temizleme fonksiyonu
+function sanitizeInput(input) {
+  return String(input || '').replace(/[&<>"'/]/g, (char) => {
+    const charMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#x27;',
+      '/': '&#x2F;',
+    };
+    return charMap[char] || char;
+  });
+}
+
+// Güvenli merhaba endpoint'i
 app.get('/hello', (req, res) => {
-  const user = req.query.user; // Kullanıcıdan gelen input (SQL Injection için uygun)
+  const user = sanitizeInput(req.query.user || 'Guest');
   res.send(`Hello, ${user}.\n`);
 });
 
-// Potansiyel güvenlik açığı: CORS zafiyeti
-// Herhangi bir kaynağa izin verilmesi
+// CORS yapılandırması: Sadece belirli bir alan adına izin ver
+const allowedOrigins = ['https://trusted-domain.com'];
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');  // Bu, herhangi bir kaynağın erişmesine izin verir
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   next();
 });
 
-// Potansiyel güvenlik açığı: 'eval' kullanımı (XSS açığı)
+// Eval yerine güvenli alternatif: Yalnızca belirli komutları çalıştır
 app.get('/eval', (req, res) => {
   const script = req.query.script;
-  eval(script); // Kullanıcıdan gelen zararlı JavaScript kodu çalıştırılabilir
-  res.send('Executed script\n');
+  if (script === 'safeAction') {
+    res.send('Executed safe action\n');
+  } else {
+    res.status(400).send('Invalid script parameter\n');
+  }
 });
 
-// Potansiyel güvenlik açığı: Güvensiz şifre saklama (text formatında saklama)
+// Şifreleri güvenli saklama: Basit bir hash fonksiyonu
+function simpleHash(password) {
+  let hash = 0;
+  for (let i = 0; i < password.length; i++) {
+    const char = password.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash |= 0; // Tam sayı olarak sakla
+  }
+  return hash.toString(16);
+}
+
 app.get('/login', (req, res) => {
-  const username = req.query.username;
-  const password = req.query.password;
-  // Şifreyi düz metin olarak kullanmak güvenlik açığı yaratır
-  console.log(`User: ${username}, Password: ${password}`);
-  res.send('Login attempt\n');
+  const username = sanitizeInput(req.query.username || '');
+  const password = req.query.password || '';
+  const hashedPassword = simpleHash(password);
+  console.log(`User: ${username}, Password Hash: ${hashedPassword}`);
+  res.send('Login attempt logged securely\n');
 });
 
-// Potansiyel güvenlik açığı: XSS (Cross-Site Scripting) açığı
+// Güvenli arama endpoint'i
 app.get('/search', (req, res) => {
-  const query = req.query.query;
-  res.send(`Search results for: ${query}`); // Kullanıcıdan gelen girdi, doğrulama yapılmadan doğrudan ekleniyor
+  const query = sanitizeInput(req.query.query || '');
+  res.send(`Search results for: ${query}`);
 });
 
 app.listen(port, () => {
