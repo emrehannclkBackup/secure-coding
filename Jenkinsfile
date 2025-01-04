@@ -5,7 +5,10 @@ pipeline {
 	}	
 
 
+
     stages {
+
+
         stage('List Files') {
             steps {
                 script {
@@ -13,9 +16,6 @@ pipeline {
                 }
             }
         }
-    }
-
-    stages {
         stage('Github') {
             steps {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/emrehannclkBackup/secure-coding.git'
